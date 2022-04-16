@@ -32,6 +32,9 @@ jobs:
       run: |
         source /opt/intel/oneapi/setvars.sh
         printenv >> $GITHUB_ENV
+        which icc
+        which icpc
+        which ifort
         git clone --recursive https://gitlab.com/sirehna_naval_group/sirehna/xdyn
         cd xdyn && mkdir build && cd build
         cmake -D CMAKE_BUILD_TYPE=Release ../code
