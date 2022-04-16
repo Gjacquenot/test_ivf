@@ -13,16 +13,18 @@ jobs:
         shell: bash --noprofile --norc {0}
     steps:
     - uses: actions/checkout@v2
-    - name: setup repo
+    - name: Setup repo
       run: |
         wget https://apt.repos.intel.com/intel-gpg-keys/GPG-PUB-KEY-INTEL-SW-PRODUCTS.PUB
         sudo apt-key add GPG-PUB-KEY-INTEL-SW-PRODUCTS.PUB
         rm GPG-PUB-KEY-INTEL-SW-PRODUCTS.PUB
         sudo echo "deb https://apt.repos.intel.com/oneapi all main" | sudo tee /etc/apt/sources.list.d/oneAPI.list
         sudo apt-get update
-    - name: install
+    - name: Install
       run: |
         sudo apt-get install -y intel-oneapi-common-vars
+        sudo apt-get install -y intel-oneapi-compiler-c
+        sudo apt-get install -y intel-oneapi-compiler-cpp
         sudo apt-get install -y intel-oneapi-compiler-fortran
         sudo apt-get install -y intel-oneapi-mkl
         sudo apt-get install -y cmake git
@@ -37,6 +39,7 @@ jobs:
         which ifort
         git clone --recursive https://gitlab.com/sirehna_naval_group/sirehna/xdyn
         cd xdyn && mkdir build && cd build
+        FC=/opt/intel/oneapi/compiler/2022.0.2/linux/bin/intel64/ifort \
         cmake -D CMAKE_BUILD_TYPE=Release ../code
         ifort test.f90 -o test_program
         mpiifort test2.f90 -o mpitest
