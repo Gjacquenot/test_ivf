@@ -24,6 +24,7 @@ jobs:
       run: |
         sudo apt-get install -y intel-oneapi-common-vars
         sudo apt-get install -y intel-oneapi-compiler-dpcpp-cpp
+        sudo apt-get install -y intel-oneapi-compiler-dpcpp-cpp-and-cpp-classic
         sudo apt-get install -y intel-oneapi-compiler-fortran
         sudo apt-get install -y intel-oneapi-mkl
         sudo apt-get install -y cmake git
@@ -36,10 +37,14 @@ jobs:
         which icc
         which icpc
         which ifort
+        ls /opt/intel/oneapi/compiler/2022.0.2/linux/bin/intel64
         git clone --recursive https://gitlab.com/sirehna_naval_group/sirehna/xdyn
         cd xdyn && mkdir build && cd build
-        FC=/opt/intel/oneapi/compiler/2022.0.2/linux/bin/intel64/ifort \
-        cmake -D CMAKE_BUILD_TYPE=Release ../code
+        cmake \
+          -D CMAKE_C_COMPILER=icc \
+          -D CMAKE_CXX_COMPILER=icpc \
+          -D CMAKE_FC_COMPILER=ifort \
+          -D CMAKE_BUILD_TYPE=Release ../code
         ifort test.f90 -o test_program
         mpiifort test2.f90 -o mpitest
 
