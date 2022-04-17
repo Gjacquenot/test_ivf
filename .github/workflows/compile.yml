@@ -6,7 +6,7 @@ on:
   pull_request:
     branches: [main, master]
 jobs:
-  build_intel_champ_fparser:
+  build_intel_docker_image:
     runs-on: ubuntu-20.04
     defaults:
       run:
@@ -15,71 +15,82 @@ jobs:
     - uses: actions/checkout@v2
     - name: Setup repo
       run: |
-        wget https://apt.repos.intel.com/intel-gpg-keys/GPG-PUB-KEY-INTEL-SW-PRODUCTS.PUB
-        sudo apt-key add GPG-PUB-KEY-INTEL-SW-PRODUCTS.PUB
-        rm GPG-PUB-KEY-INTEL-SW-PRODUCTS.PUB
-        sudo echo "deb https://apt.repos.intel.com/oneapi all main" | sudo tee /etc/apt/sources.list.d/oneAPI.list
-        sudo apt-get update
-    - name: Install
-      run: |
-        sudo apt-get install -y intel-oneapi-common-vars
-        sudo apt-get install -y intel-oneapi-compiler-dpcpp-cpp
-        sudo apt-get install -y intel-oneapi-compiler-dpcpp-cpp-and-cpp-classic
-        sudo apt-get install -y intel-oneapi-compiler-fortran
-        sudo apt-get install -y intel-oneapi-mkl
-        sudo apt-get install -y cmake git
-        sudo apt-get install -y libeigen3-dev
+        docker build . -t ivf
 
-    # BOOST 1.60 with Boost geometry extensions
-    # SSC : system thread random chrono
-    # XDYN : program_options filesystem system regex
-    # libbz2 is required for Boost compilation
-
-    - name: Compile
-      run: |
-        source /opt/intel/oneapi/setvars.sh
-        printenv >> $GITHUB_ENV
-        which icc
-        which icpc
-        which ifort
-        wget http://sourceforge.net/projects/boost/files/boost/1.60.0/boost_1_60_0.tar.gz -O boost_src.tar.gz && \
-        mkdir -p boost_src && \
-        tar -xzf boost_src.tar.gz --strip 1 -C boost_src && \
-        rm -rf boost_src.tar.gz && \
-        cd boost_src && \
-        ./bootstrap.sh --with-toolset=intel-linux && \
-        ./b2 cxxflags=-fPIC --without-mpi --without-python link=static threading=single threading=multi --layout=tagged --prefix=/opt/boost install && \
-        cd .. && \
-        rm -rf boost_src
-        # BOOST Geometry extension
-        git clone https://github.com/boostorg/geometry && \
-        cd geometry && \
-        git checkout 4aa61e59a72b44fb3c7761066d478479d2dd63a0 && \
-        cp -rf include/boost/geometry/extensions /opt/boost/include/boost/geometry/. && \
-        cd .. && \
-        rm -rf geometry
-
-    - name: Compile
-      run: |
-        source /opt/intel/oneapi/setvars.sh
-        printenv >> $GITHUB_ENV
-        which icc
-        which icpc
-        which ifort
-        ls /opt/intel/oneapi/compiler/2022.0.2/linux/bin/intel64
-        git clone --recursive https://gitlab.com/sirehna_naval_group/sirehna/xdyn
-        cd xdyn && mkdir build && cd build
-        cmake \
-          -D CMAKE_C_COMPILER=icc \
-          -D CMAKE_CXX_COMPILER=icpc \
-          -D CMAKE_FC_COMPILER=ifort \
-          -D CMAKE_BUILD_TYPE=Release ../code
-        ifort test.f90 -o test_program
-        mpiifort test2.f90 -o mpitest
-
-    - name: "Test the code"
-      run: |
-        echo "Running the tests using the Intel oneapi fortran compiler"
-        cd tests/test01
-        mpirun -np 1  $HOME/work/reponame/reponame/mpitest
-        ./$HOME/work/reponame/reponame/test_program
+#  build_intel_champ_fparser:
+#    runs-on: ubuntu-20.04
+#    defaults:
+#      run:
+#        shell: bash --noprofile --norc {0}
+#    steps:
+#    - uses: actions/checkout@v2
+#    - name: Setup repo
+#      run: |
+#        wget https://apt.repos.intel.com/intel-gpg-keys/GPG-PUB-KEY-INTEL-SW-PRODUCTS.PUB
+#        sudo apt-key add GPG-PUB-KEY-INTEL-SW-PRODUCTS.PUB
+#        rm GPG-PUB-KEY-INTEL-SW-PRODUCTS.PUB
+#        sudo echo "deb https://apt.repos.intel.com/oneapi all main" | sudo tee /etc/apt/sources.list.d/oneAPI.list
+#        sudo apt-get update
+#    - name: Install
+#      run: |
+#        sudo apt-get install -y intel-oneapi-common-vars
+#        sudo apt-get install -y intel-oneapi-compiler-dpcpp-cpp
+#        sudo apt-get install -y intel-oneapi-compiler-dpcpp-cpp-and-cpp-classic
+#        sudo apt-get install -y intel-oneapi-compiler-fortran
+#        sudo apt-get install -y intel-oneapi-mkl
+#        sudo apt-get install -y cmake git
+#        sudo apt-get install -y libeigen3-dev
+#
+#    # BOOST 1.60 with Boost geometry extensions
+#    # SSC : system thread random chrono
+#    # XDYN : program_options filesystem system regex
+#    # libbz2 is required for Boost compilation
+#
+#    - name: Compile
+#      run: |
+#        source /opt/intel/oneapi/setvars.sh
+#        printenv >> $GITHUB_ENV
+#        which icc
+#        which icpc
+#        which ifort
+#        wget http://sourceforge.net/projects/boost/files/boost/1.60.0/boost_1_60_0.tar.gz -O boost_src.tar.gz && \
+#        mkdir -p boost_src && \
+#        tar -xzf boost_src.tar.gz --strip 1 -C boost_src && \
+#        rm -rf boost_src.tar.gz && \
+#        cd boost_src && \
+#        ./bootstrap.sh --with-toolset=intel-linux && \
+#        ./b2 cxxflags=-fPIC --without-mpi --without-python link=static threading=single threading=multi #--layout=tagged --prefix=/opt/boost install && \
+#        cd .. && \
+#        rm -rf boost_src
+#        # BOOST Geometry extension
+#        git clone https://github.com/boostorg/geometry && \
+#        cd geometry && \
+#        git checkout 4aa61e59a72b44fb3c7761066d478479d2dd63a0 && \
+#        cp -rf include/boost/geometry/extensions /opt/boost/include/boost/geometry/. && \
+#        cd .. && \
+#        rm -rf geometry
+#
+#    - name: Compile
+#      run: |
+#        source /opt/intel/oneapi/setvars.sh
+#        printenv >> $GITHUB_ENV
+#        which icc
+#        which icpc
+#        which ifort
+#        ls /opt/intel/oneapi/compiler/2022.0.2/linux/bin/intel64
+#        git clone --recursive https://gitlab.com/sirehna_naval_group/sirehna/xdyn
+#        cd xdyn && mkdir build && cd build
+#        cmake \
+#          -D CMAKE_C_COMPILER=icc \
+#          -D CMAKE_CXX_COMPILER=icpc \
+#          -D CMAKE_FC_COMPILER=ifort \
+#          -D CMAKE_BUILD_TYPE=Release ../code
+#        ifort test.f90 -o test_program
+#        mpiifort test2.f90 -o mpitest
+#
+#    - name: "Test the code"
+#      run: |
+#        echo "Running the tests using the Intel oneapi fortran compiler"
+#        cd tests/test01
+#        mpirun -np 1  $HOME/work/reponame/reponame/mpitest
+#        ./$HOME/work/reponame/reponame/test_program
