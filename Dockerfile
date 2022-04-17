@@ -6,6 +6,7 @@ RUN apt-get update \
     curl \
     ca-certificates \
     gpg-agent \
+    libbz2-dev \
     software-properties-common \
     wget \
  && rm -rf /var/lib/apt/lists/* \
