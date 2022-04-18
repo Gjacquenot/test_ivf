@@ -9,6 +9,8 @@ RUN apt-get update \
     gpg-agent \
     libbz2-dev \
     software-properties-common \
+    ninja-build \
+    unzip \
     wget \
  && rm -rf /var/lib/apt/lists/* \
  && curl -fsSL https://apt.repos.intel.com/intel-gpg-keys/GPG-PUB-KEY-INTEL-SW-PRODUCTS-2023.PUB | apt-key add - \
