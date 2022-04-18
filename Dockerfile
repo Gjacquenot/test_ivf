@@ -123,7 +123,8 @@ RUN . ./opt/intel/oneapi/setvars.sh \
  && tar -xf hdf5_source.tar.gz --strip 1 -C HDF5_SRC \
  && mkdir -p HDF5_build \
  && cd HDF5_build \
- && cmake -G "Unix Makefiles" \
+ && /opt/dist/usr/local/bin/cmake \
+      -G "Unix Makefiles" \
       -D CMAKE_C_COMPILER=icc \
       -D CMAKE_CXX_COMPILER=icpc \
       -D CMAKE_FC_COMPILER=ifort \
@@ -154,7 +155,8 @@ RUN . ./opt/intel/oneapi/setvars.sh \
  && cd grpc_src \
  && mkdir -p cmake/build \
  && cd cmake/build \
- && cmake -G "Unix Makefiles" \
+ && /opt/dist/usr/local/bin/cmake \
+      -G "Unix Makefiles" \
       -D CMAKE_C_COMPILER=icc \
       -D CMAKE_CXX_COMPILER=icpc \
       -D CMAKE_FC_COMPILER=ifort \
