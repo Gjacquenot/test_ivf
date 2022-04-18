@@ -123,7 +123,7 @@ RUN . ./opt/intel/oneapi/setvars.sh \
  && tar -xf hdf5_source.tar.gz --strip 1 -C HDF5_SRC \
  && mkdir -p HDF5_build \
  && cd HDF5_build \
- && cmake -G"Unix Makefiles" \
+ && cmake -G "Unix Makefiles" \
       -D CMAKE_C_COMPILER=icc \
       -D CMAKE_CXX_COMPILER=icpc \
       -D CMAKE_FC_COMPILER=ifort \
@@ -142,6 +142,35 @@ RUN . ./opt/intel/oneapi/setvars.sh \
  && make install \
  && cd .. \
  && rm -rf hdf5_source.tar.gz HDF5_SRC HDF5_build
+
+RUN cd /opt \
+ && git clone https://github.com/garrison/eigen3-hdf5 \
+ && cd eigen3-hdf5 \
+ && git checkout 2c782414251e75a2de9b0441c349f5f18fe929a2
+
+ARG GIT_GRPC_TAG=v1.30.2
+RUN . ./opt/intel/oneapi/setvars.sh \
+ && git clone --recurse-submodules -b ${GIT_GRPC_TAG} https://github.com/grpc/grpc grpc_src \
+ && cd grpc_src \
+ && mkdir -p cmake/build \
+ && cd cmake/build \
+ && cmake -G "Unix Makefiles" \
+      -D CMAKE_C_COMPILER=icc \
+      -D CMAKE_CXX_COMPILER=icpc \
+      -D CMAKE_FC_COMPILER=ifort \
+      -D gRPC_INSTALL:BOOL=ON \
+      -D CMAKE_INSTALL_PREFIX=/opt/grpc \
+      -D CMAKE_BUILD_TYPE=Release \
+      -D gRPC_BUILD_TESTS:BOOL=OFF \
+      -D BUILD_SHARED_LIBS:BOOL=OFF \
+      -D CMAKE_POSITION_INDEPENDENT_CODE:BOOL=ON \
+      -D CMAKE_C_FLAGS="-fPIC" \
+      -D CMAKE_CXX_FLAGS="-fPIC" \
+      -D CMAKE_VERBOSE_MAKEFILE:BOOL=OFF \
+      ../.. \
+ && make install \
+ && cd ../../.. \
+ && rm -rf grpc_src
 
 ENV CMAKE_PREFIX_PATH='/opt/intel/oneapi/tbb/latest:/opt/intel/oneapi/compiler/latest/linux/IntelDPCPP'
 ENV ONEAPI_ROOT='/opt/intel/oneapi'
