@@ -22,7 +22,7 @@ jobs:
     - name: Build and push the docker image
       run: |
         docker pull gjacquenot/xdynivf
-        docker build . -t gjacquenot/xdynivf
+        docker build --cache-from gjacquenot/xdynivf -t gjacquenot/xdynivf .
         docker push gjacquenot/xdynivf
 #  build_intel_champ_fparser:
 #    runs-on: ubuntu-20.04
