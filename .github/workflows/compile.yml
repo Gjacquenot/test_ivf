@@ -12,11 +12,17 @@ jobs:
       run:
         shell: bash --noprofile --norc {0}
     steps:
-    - uses: actions/checkout@v2
-    - name: Setup repo
+    - name: Checkout
+      uses: actions/checkout@v2
+    - name: Login to Docker Hub
+      uses: docker/login-action@v1
+      with:
+        username: ${{ secrets.DOCKERHUB_LOGIN }}
+        password: ${{ secrets.DOCKERHUB_PASSWORD }}
+    - name: Build and push the docker image
       run: |
-        docker build . -t ivf
-
+        docker build . -t gjacquenot/xdynivf
+        docker push gjacquenot/xdynivf
 #  build_intel_champ_fparser:
 #    runs-on: ubuntu-20.04
 #    defaults:
