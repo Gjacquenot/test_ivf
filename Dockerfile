@@ -12,6 +12,13 @@ RUN apt-get update \
     ninja-build \
     unzip \
     wget \
+ && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
+    build-essential \
+    g++ \
+    gcc \
+    gfortran \
+    libblas3 \
+    liblapack3 \
  && rm -rf /var/lib/apt/lists/* \
  && curl -fsSL https://apt.repos.intel.com/intel-gpg-keys/GPG-PUB-KEY-INTEL-SW-PRODUCTS-2023.PUB | apt-key add - \
  && echo "deb [trusted=yes] https://apt.repos.intel.com/oneapi all main " > /etc/apt/sources.list.d/oneAPI.list \
