@@ -21,6 +21,7 @@ jobs:
         password: ${{ secrets.DOCKERHUB_PASSWORD }}
     - name: Build and push the docker image
       run: |
+        docker pull gjacquenot/xdynivf
         docker build . -t gjacquenot/xdynivf
         docker push gjacquenot/xdynivf
 #  build_intel_champ_fparser:
