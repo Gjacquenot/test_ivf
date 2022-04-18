@@ -115,3 +115,7 @@ RUN wget https://sourceforge.net/projects/geographiclib/files/distrib/archive/Ge
  && mkdir -p /opt/geographiclib \
  && tar -xzf geographiclib.tgz --strip 1 -C /opt/geographiclib \
  && rm -rf geographiclib.tgz
+
+ENV CMAKE_PREFIX_PATH='/opt/intel/oneapi/tbb/latest:/opt/intel/oneapi/compiler/latest/linux/IntelDPCPP'
+ENV ONEAPI_ROOT='/opt/intel/oneapi'
+ENV PATH='/opt/intel/oneapi/mpi/latest/libfabric/bin:/opt/intel/oneapi/mpi/latest/bin:/opt/intel/oneapi/dev-utilities/latest/bin:/opt/intel/oneapi/debugger/latest/gdb/intel64/bin:/opt/intel/oneapi/compiler/latest/linux/lib/oclfpga/bin:/opt/intel/oneapi/compiler/latest/linux/bin/intel64:/opt/intel/oneapi/compiler/latest/linux/bin:/opt/dist/usr/local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin'
