@@ -10,6 +10,7 @@ RUN apt-get update \
     ninja-build \
     unzip \
     wget \
+    zlib1g-dev \
  && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
     build-essential \
     g++ \
